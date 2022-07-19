@@ -1,8 +1,8 @@
 Stepper Page View allows you to create a full page stepper flow that can be heavily customized to your needs.
 
 <p float="left">
-  <img src="./screenshots/screenshot_0.png" width="100" />
-  <img src="./screenshots/screenshot_1.png" width="100" /> 
+  <img src="./screenshots/screenshot_0.png" width="300" />
+  <img src="./screenshots/screenshot_1.png" width="300" /> 
 </p>
 
 ## Features
