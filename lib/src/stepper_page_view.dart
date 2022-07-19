@@ -32,11 +32,11 @@ class StepperPageView extends StatefulWidget {
     super.key,
     required this.pageSteps,
     this.pageController,
+    this.initialPage,
     this.scrollDirection = Axis.horizontal,
     this.reverse = false,
     this.physics,
     this.onPageChanged,
-    this.currentPage = 0,
     this.pageTransitionDuration = const Duration(milliseconds: 300),
     this.pageTransitionCurve = Curves.easeInOut,
     this.footerBuilder = defaultFooterBuilder,
@@ -51,9 +51,9 @@ class StepperPageView extends StatefulWidget {
   /// The length of [pageSteps] must not change.
   final List<PageStep> pageSteps;
 
-  final int currentPage;
-
   final PageController? pageController;
+
+  final int? initialPage;
 
   /// The axis along which the page view scrolls.
   ///
@@ -246,22 +246,24 @@ class StepperPageView extends StatefulWidget {
 class _StepperPageViewState extends State<StepperPageView> {
   late int currentPage;
   late PageController pageController;
-  final pageProgress = ValueNotifier<double>(0.0);
+  late final pageProgress = ValueNotifier<double>(0.0);
 
   @override
   void initState() {
-    currentPage = widget.currentPage;
     pageController = getPageController();
+    currentPage = widget.initialPage ?? 0;
+    pageProgress.value = currentPage.toDouble();
+
+    if (widget.initialPage != null) {
+      Future<void>.delayed(Duration.zero, () {
+        pageController.jumpToPage(currentPage);
+      });
+    }
     super.initState();
   }
 
   @override
   void didUpdateWidget(covariant StepperPageView oldWidget) {
-    if (widget.currentPage != currentPage) {
-      updateCurrentPage();
-      pageController.jumpToPage(currentPage);
-    }
-
     if (widget.pageController != pageController) {
       // This means we were using our own controller and we should dispose of
       // it.
@@ -272,26 +274,21 @@ class _StepperPageViewState extends State<StepperPageView> {
       }
     }
 
+    if (widget.onPageChanged != oldWidget.onPageChanged) {
+      pageController.removeListener(pageListener);
+      pageController.addListener(pageListener);
+    }
+
     super.didUpdateWidget(oldWidget);
   }
 
-  void updateCurrentPage() {
-    currentPage = widget.currentPage;
-    pageController.jumpToPage(currentPage);
-  }
-
   PageController getPageController() {
-    final nextController =
-        widget.pageController ?? PageController(initialPage: currentPage);
+    final nextController = widget.pageController ??
+        PageController(initialPage: widget.initialPage ?? 0);
 
     nextController.addListener(pageListener);
 
     return nextController;
-  }
-
-  void cleanupPageController() {
-    pageController.removeListener(pageListener);
-    pageController.dispose();
   }
 
   void pageListener() {
@@ -300,6 +297,11 @@ class _StepperPageViewState extends State<StepperPageView> {
     if (maybePage != null) {
       pageProgress.value = maybePage;
     }
+  }
+
+  void cleanupPageController() {
+    pageController.removeListener(pageListener);
+    pageController.dispose();
   }
 
   @override
@@ -360,8 +362,11 @@ class _StepperPageViewState extends State<StepperPageView> {
               child: PageView.builder(
                 controller: pageController,
                 itemCount: widget.pageSteps.length,
-                onPageChanged: widget.onPageChanged ??
-                    (index) => setState(() => currentPage = index),
+                onPageChanged: (index) {
+                  setState(() => currentPage = index);
+
+                  widget.onPageChanged?.call(index);
+                },
                 reverse: widget.reverse,
                 scrollDirection: widget.scrollDirection,
                 physics: widget.physics,

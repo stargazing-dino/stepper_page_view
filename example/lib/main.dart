@@ -32,10 +32,9 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      // appBar: AppBar(title: ),
       body: StepperPageView(
         pageController: controller,
-        currentPage: 1,
+        initialPage: 2,
         pageSteps: const [
           PageStep(
             title: Text('Step 1'),
