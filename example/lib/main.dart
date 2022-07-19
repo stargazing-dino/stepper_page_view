@@ -33,8 +33,7 @@ class _MyHomePageState extends State<MyHomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: StepperPageView(
-        // pageController: controller,
-        // initialPage: 1,
+        pageController: controller,
         pageSteps: const [
           PageStep(
             title: Text('Step 1'),
