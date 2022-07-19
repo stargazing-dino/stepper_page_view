@@ -32,22 +32,25 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: StepperPageView(
-        pageController: controller,
-        pageSteps: const [
-          PageStep(
-            title: Text('Step 1'),
-            content: Center(child: Text('Page 1')),
-          ),
-          PageStep(
-            title: Text('Step 2'),
-            content: Center(child: Text('Page 2')),
-          ),
-          PageStep(
-            title: Text('Step 3'),
-            content: Center(child: Text('Page 3')),
-          ),
-        ],
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: StepperPageView(
+          pageController: controller,
+          pageSteps: const [
+            PageStep(
+              title: Text('Step 1'),
+              content: Center(child: Text('Page 1')),
+            ),
+            PageStep(
+              title: Text('Step 2'),
+              content: Center(child: Text('Page 2')),
+            ),
+            PageStep(
+              title: Text('Step 3'),
+              content: Center(child: Text('Page 3')),
+            ),
+          ],
+        ),
       ),
     );
   }
