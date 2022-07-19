@@ -246,7 +246,7 @@ class _StepperPageViewState extends State<StepperPageView> {
   @override
   void initState() {
     currentPage = widget.currentPage;
-    setupPageController();
+    pageController = getPageController();
     super.initState();
   }
 
@@ -254,13 +254,17 @@ class _StepperPageViewState extends State<StepperPageView> {
   void didUpdateWidget(covariant StepperPageView oldWidget) {
     if (widget.currentPage != currentPage) {
       updateCurrentPage();
-      cleanupPageController();
-      setupPageController();
+      pageController.jumpToPage(currentPage);
     }
 
     if (widget.pageController != pageController) {
-      cleanupPageController();
-      setupPageController();
+      // This means we were using our own controller and we should dispose of
+      // it.
+      if (widget.pageController == null) {
+        cleanupPageController();
+      } else {
+        pageController = getPageController();
+      }
     }
 
     super.didUpdateWidget(oldWidget);
@@ -271,11 +275,13 @@ class _StepperPageViewState extends State<StepperPageView> {
     pageController.jumpToPage(currentPage);
   }
 
-  void setupPageController() {
-    pageController =
+  PageController getPageController() {
+    final nextController =
         widget.pageController ?? PageController(initialPage: currentPage);
 
-    pageController.addListener(pageListener);
+    nextController.addListener(pageListener);
+
+    return nextController;
   }
 
   void cleanupPageController() {
@@ -293,7 +299,10 @@ class _StepperPageViewState extends State<StepperPageView> {
 
   @override
   void dispose() {
-    cleanupPageController();
+    // Do not clean up the users controller.
+    if (widget.pageController == null) {
+      cleanupPageController();
+    }
     super.dispose();
   }
 
@@ -347,11 +356,7 @@ class _StepperPageViewState extends State<StepperPageView> {
                 controller: pageController,
                 itemCount: widget.pageSteps.length,
                 onPageChanged: widget.onPageChanged ??
-                    (index) {
-                      setState(() {
-                        currentPage = index;
-                      });
-                    },
+                    (index) => setState(() => currentPage = index),
                 reverse: widget.reverse,
                 scrollDirection: widget.scrollDirection,
                 physics: widget.physics,
