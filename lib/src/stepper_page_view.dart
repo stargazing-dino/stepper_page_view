@@ -250,13 +250,17 @@ class _StepperPageViewState extends State<StepperPageView> {
 
   @override
   void initState() {
-    pageController = getPageController();
+    pageController = widget.pageController ??
+        PageController(initialPage: widget.initialPage ?? 0);
+    attachPageController(pageController);
     currentPage = widget.initialPage ?? 0;
     pageProgress.value = currentPage.toDouble();
 
     if (widget.initialPage != null) {
       Future<void>.delayed(Duration.zero, () {
-        pageController.jumpToPage(currentPage);
+        if (mounted) {
+          pageController.jumpToPage(currentPage);
+        }
       });
     }
     super.initState();
@@ -264,14 +268,13 @@ class _StepperPageViewState extends State<StepperPageView> {
 
   @override
   void didUpdateWidget(covariant StepperPageView oldWidget) {
-    if (widget.pageController != pageController) {
-      // This means we were using our own controller and we should dispose of
-      // it.
-      if (widget.pageController == null) {
-        cleanupPageController();
-      } else {
-        pageController = getPageController();
-      }
+    final oldPageController = oldWidget.pageController;
+    final newPageController = widget.pageController;
+
+    if (oldPageController == null && newPageController != null) {
+      cleanupPageController();
+      pageController = newPageController;
+      attachPageController(pageController);
     }
 
     if (widget.onPageChanged != oldWidget.onPageChanged) {
@@ -282,13 +285,8 @@ class _StepperPageViewState extends State<StepperPageView> {
     super.didUpdateWidget(oldWidget);
   }
 
-  PageController getPageController() {
-    final nextController = widget.pageController ??
-        PageController(initialPage: widget.initialPage ?? 0);
-
-    nextController.addListener(pageListener);
-
-    return nextController;
+  void attachPageController(PageController pageController) {
+    pageController.addListener(pageListener);
   }
 
   void pageListener() {

@@ -27,14 +27,14 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  final controller = PageController();
+  final controller = PageController(initialPage: 0);
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: StepperPageView(
-        pageController: controller,
-        initialPage: 2,
+        // pageController: controller,
+        // initialPage: 1,
         pageSteps: const [
           PageStep(
             title: Text('Step 1'),
