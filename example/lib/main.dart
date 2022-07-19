@@ -32,6 +32,7 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      // appBar: AppBar(title: ),
       body: StepperPageView(
         pageController: controller,
         currentPage: 1,

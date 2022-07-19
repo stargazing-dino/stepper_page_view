@@ -41,7 +41,7 @@ class StepperPageView extends StatefulWidget {
     this.pageTransitionCurve = Curves.easeInOut,
     this.footerBuilder = defaultFooterBuilder,
     this.pageIndicatorBuilder = defaultPageIndicatorBuilder,
-    this.itemBuilder = defaultItemBuilder,
+    this.pageBuilder = defaultItemBuilder,
     this.padding = const EdgeInsets.only(top: 16.0),
     this.contentPadding = const EdgeInsets.all(0),
   });
@@ -100,7 +100,12 @@ class StepperPageView extends StatefulWidget {
 
   final StepperPageIndicatorBuilder pageIndicatorBuilder;
 
-  final StepperPageItemBuilder itemBuilder;
+  /// A builder for the content of the page.
+  ///
+  /// Override this if you need more customization than the default content
+  /// field on a step can provider or if you need all pages to share some sort
+  /// of common widget.
+  final StepperPageItemBuilder pageBuilder;
 
   final EdgeInsets padding;
 
@@ -363,7 +368,7 @@ class _StepperPageViewState extends State<StepperPageView> {
                 itemBuilder: (context, index) {
                   return Padding(
                     padding: widget.contentPadding,
-                    child: widget.itemBuilder(
+                    child: widget.pageBuilder(
                       context,
                       index,
                       widget.pageSteps,
