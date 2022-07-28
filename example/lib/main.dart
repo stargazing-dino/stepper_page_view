@@ -31,26 +31,65 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
     return Scaffold(
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: StepperPageView(
-          pageController: controller,
-          pageSteps: const [
-            PageStep(
-              title: Text('Step 1'),
-              content: Center(child: Text('Page 1')),
+      body: StepperPageView.form(
+        physics: const NeverScrollableScrollPhysics(),
+        pagePadding: const EdgeInsets.all(16),
+        pageController: controller,
+        onRequestNextPage: (currentPage, pageSteps, formKeys) {
+          //
+          return true;
+        },
+        pageSteps: [
+          FormPageStep(
+            title: const Text('Step 1'),
+            content: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              // mainAxisSize: MainAxisSize.max,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text(
+                  'Hi, enter your name please!',
+                  style: theme.textTheme.headline6,
+                ),
+                const SizedBox(height: 32.0),
+                TextFormField(
+                  decoration: const InputDecoration(hintText: 'John Doe'),
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Please enter some text';
+                    }
+
+                    return null;
+                  },
+                ),
+                Container(
+                  height: 1000,
+                  width: double.infinity,
+                  color: Colors.pink,
+                ),
+              ],
             ),
-            PageStep(
-              title: Text('Step 2'),
-              content: Center(child: Text('Page 2')),
+          ),
+          FormPageStep(
+            title: const Text('Step 2'),
+            content: Column(
+              children: [
+                const Spacer(),
+                ElevatedButton(
+                  child: const Text('howdy'),
+                  onPressed: () {},
+                )
+              ],
             ),
-            PageStep(
-              title: Text('Step 3'),
-              content: Center(child: Text('Page 3')),
-            ),
-          ],
-        ),
+          ),
+          const FormPageStep(
+            title: Text('Step 3'),
+            content: Center(child: Text('Page 3')),
+          ),
+        ],
       ),
     );
   }

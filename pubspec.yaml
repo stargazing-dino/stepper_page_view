@@ -1,6 +1,6 @@
 name: stepper_page_view
 description: A custom stepper that displays steps in a page view
-version: 0.0.2
+version: 0.0.3
 homepage: "https://github.com/Nolence/stepper_page_view"
 
 environment:
@@ -8,11 +8,9 @@ environment:
   flutter: ">=1.17.0"
 
 dependencies:
-  # Used for mapIndexed
   collection: ^1.16.0
-  # The default header builder builds some circles that have dotted lines
-  # between them.
   dotted_line: ^3.1.0
+  either_dart: ^0.1.4
   flutter:
     sdk: flutter
 
