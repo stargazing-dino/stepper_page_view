@@ -11,6 +11,8 @@ A simple widget that allows you to fill any area with your stepper pages. It com
 
 ## Getting started
 
+**Note** This library is a work in progress and is not yet ready for production use.
+
 Add the following to your `pubspec.yaml`:
 
 ```yaml

@@ -1,3 +1,7 @@
+## 0.0.3
+
+* FormPageSteps are now useable.
+
 ## 0.0.2
 
 * Move to controlsDetails for the builders
